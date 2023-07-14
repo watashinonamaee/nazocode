@@ -1,0 +1,75 @@
+<html>
+<head>
+<meta charset="utf-8">
+</head>
+<body>
+
+<h2>謎の暗号解読</h2>
+<button onclick="downloadPage()">Download This Page</button>
+<div style="display:flex;align-items: flex-end;">
+<textarea id="myText" rows="10" cols="50" placeholder="謎の呪文を入力"></textarea>
+<button onclick="processText()" style="padding-top:59px;padding-bottom:59px;">Submit</button>
+<div>
+<input type="checkbox" id="removeLink">
+<label for="removeLink">一度クリックしたリンクは消す<br>(ホイールクリックすると消えません)</label>
+
+</div>
+
+</div>
+<a>リンク:</a>
+<div id="links"></div>
+
+<script>
+function processText() {
+    var textArea = document.getElementById("myText");
+    var text = textArea.value;
+    var lines = text.split('\n');
+
+    textArea.value = '';
+    var linksDiv = document.getElementById("links");
+    linksDiv.innerHTML = '';
+
+    for(var i = 0; i < lines.length; i++){
+        var firstWord = lines[i].split(/\s+/)[0];
+        
+        var url = "";
+        if(firstWord.length == 19){
+            url = "https://twitter.com/_/status/" + firstWord;
+        } else {
+            url = "https://twitter.com/" + firstWord + "/media";
+        }
+
+        var a = document.createElement('a');
+        var linkText = document.createTextNode(url);
+        a.appendChild(linkText);
+        a.title = url;
+        a.href = url;
+        a.target = "_blank";
+        
+        if(document.getElementById('removeLink').checked){
+            a.onclick = function(event){
+                event.preventDefault();
+                this.parentNode.removeChild(this.nextSibling);
+                this.parentNode.removeChild(this);
+                window.open(this.href, '_blank');
+            }
+        }
+
+        linksDiv.appendChild(a);
+        linksDiv.appendChild(document.createElement('br'));
+    }
+}
+	function downloadPage(){
+            var pageContent = '<html>\n' + document.head.outerHTML + '\n' + document.body.outerHTML + '</html>';
+            var blob = new Blob([pageContent], {type: 'text/html'});
+            var a = document.createElement('a');
+            var url = window.URL.createObjectURL(blob);
+            a.href = url;
+            a.download = 'mypage.html';
+            a.click();
+        }
+</script>
+
+
+
+</body></html>
